@@ -1,7 +1,7 @@
 # rmnhofma.github.io
 
-The PluginsBTW site: an overview of the plugins and a page for each one, generated from the public
-`<Name>-release` repositories on GitHub and served by GitHub Pages from `main`.
+An overview of the plugins, latest release first, and a page for each one, generated from the
+public `<Name>-release` repositories on GitHub and served by GitHub Pages from `main`.
 
 ## After a release, or for a new plugin
 
@@ -48,5 +48,5 @@ stops if anything would link a private source repository.
   Don't edit these by hand. `.nojekyll` makes Pages serve the files as they are.
 - `.cache/`, not committed: shallow clones of the release repositories.
 
-The colors and the font follow the PluginsBTW design system (`docs/design/` in FrameworkBtw). Ubuntu
-Light is under the Ubuntu Font Licence, `assets/fonts/UFL.txt`.
+The colors and the font are the ones the plugins use. Ubuntu Light is under the Ubuntu Font Licence,
+`assets/fonts/UFL.txt`.

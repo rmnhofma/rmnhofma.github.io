@@ -1,5 +1,5 @@
-/* PluginsBTW UI on the web. The tokens are from FrameworkBtw's docs/design/tokens.json;
-   the type sizes above 13px are the site's own, for reading at length. */
+/* The plugins' design tokens on the web; the type sizes above 13px are the site's own,
+   for reading at length. */
 :root {
   color-scheme: dark;
   --background: #0a0e15;

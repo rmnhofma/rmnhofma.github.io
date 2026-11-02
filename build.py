@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Generates the PluginsBTW site from the public <Name>-release repositories on GitHub.
+"""Generates the site from the public <Name>-release repositories on GitHub.
 
 Every public repository of OWNER named <Name>-release with a published release becomes a plugin:
 a card on index.html and a page in plugins/<name>/ with its README, release notes, images and a
@@ -158,6 +158,7 @@ def parse_release(release, repo):
     checksum = assets.get(f"{archive['name']}.sha256") if archive else None
     return {
         "version": release["tag_name"],
+        "published": published,
         "date": f"{published.day} {published:%b %Y}",
         "url": release["html_url"],
         "notes": Markup(parse_notes(release["body"], repo)),
@@ -285,7 +286,7 @@ def main():
     repos = [r for r in repos if r["name"].endswith("-release") and not r["private"] and not r["archived"]]
     print(f"{len(repos)} release repositories")
     plugins = [plugin for repo in repos if (plugin := collect(repo))]
-    plugins.sort(key=lambda plugin: plugin["name"].lower())
+    plugins.sort(key=lambda plugin: plugin["latest"]["published"], reverse=True)
 
     hashes = json.loads(HASHES.read_text()) if HASHES.exists() else {}
     for plugin in plugins:
