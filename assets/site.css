@@ -1,0 +1,202 @@
+/* PluginsBTW UI on the web. The tokens are from FrameworkBtw's docs/design/tokens.json;
+   the type sizes above 13px are the site's own, for reading at length. */
+:root {
+  color-scheme: dark;
+  --background: #0a0e15;
+  --surface: #111824;
+  --raised: #1a2333;
+  --raised-hover: #222e43;
+  --edge: #263247;
+  --display: #07101f;
+  --accent: #3d9bff;
+  --accent-halo-strong: #3d9bff2e;
+  --glow: #5fd0ff;
+  --text: #e3eaf5;
+  --text-dim: #8a95a9;
+  --radius-control: 7px;
+  --radius-display: 12px;
+  --radius-panel: 14px;
+  --font-sans: "Ubuntu", sans-serif;
+  --font-mono: ui-monospace, "DejaVu Sans Mono", monospace;
+  --page: 1120px;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url("fonts/Ubuntu-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-display: swap;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font: 300 16px/1.6 var(--font-sans);
+}
+
+main, .site-header, .site-footer {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding-inline: 24px;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--glow); }
+:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+strong { font-weight: 700; }
+h1, h2, h3 { font-weight: 300; line-height: 1.25; }
+
+.site-header { padding-block: 24px; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  font-size: 22px;
+}
+.brand:hover { color: var(--text); }
+
+.site-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-top: 72px;
+  padding-block: 24px;
+  border-top: 1px solid var(--edge);
+  color: var(--text-dim);
+  font-size: 13px;
+}
+
+.version { color: var(--text-dim); font-size: 13px; white-space: nowrap; }
+
+/* Overview */
+.intro { padding-block: 32px 40px; }
+.intro h1 { margin: 0 0 8px; font-size: clamp(32px, 6vw, 48px); }
+.intro p { margin: 0; color: var(--text-dim); font-size: 18px; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-panel);
+  overflow: hidden;
+}
+.card:hover { background: var(--raised); }
+.card a { display: flex; flex-direction: column; height: 100%; color: inherit; }
+.card img {
+  width: 100%;
+  aspect-ratio: 17 / 12;
+  object-fit: contain;
+  background: var(--background);
+}
+.card-text { display: block; padding: 16px 20px 20px; }
+.card-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+.card-name { font-size: 20px; }
+.card:hover .card-name { color: var(--glow); }
+.card-summary { display: block; color: var(--text-dim); font-size: 15px; line-height: 1.5; }
+.card-summary strong { color: var(--text); font-weight: 300; }
+
+/* A plugin's page */
+.back { padding-block: 4px 20px; font-size: 14px; }
+.back a::before { content: "← "; }
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+  gap: 40px;
+  align-items: center;
+  padding-bottom: 48px;
+}
+.hero-image { width: 100%; border-radius: var(--radius-panel); }
+.hero h1 { margin: 0 0 12px; font-size: clamp(32px, 5vw, 44px); }
+.summary { margin: 0 0 16px; font-size: 18px; line-height: 1.5; color: var(--text-dim); }
+.summary strong { color: var(--text); font-weight: 300; }
+.meta { margin: 0 0 20px; color: var(--text-dim); font-size: 14px; }
+
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.button {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-control);
+  background: var(--raised);
+  color: var(--text);
+}
+.button:hover { background: var(--raised-hover); color: var(--text); }
+.button-note { font-size: 13px; color: var(--text-dim); }
+.button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--background);
+  box-shadow: 0 0 0 3px var(--accent-halo-strong);
+}
+.button.primary:hover { background: var(--glow); border-color: var(--glow); color: var(--background); }
+.button.primary .button-note { color: var(--background); }
+
+.links { display: flex; flex-wrap: wrap; gap: 4px 20px; margin: 0; font-size: 14px; }
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 40px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-panel);
+  padding: 20px 24px;
+}
+.changes { position: sticky; top: 24px; max-height: calc(100vh - 48px); overflow-y: auto; font-size: 15px; }
+.changes h2 { margin: 0 0 12px; font-size: 18px; }
+.changes h3 { margin: 16px 0 4px; font-size: 15px; }
+.changes .date { color: var(--text-dim); font-size: 13px; margin-left: 6px; }
+.notes p, .notes ul { margin: 0 0 10px; }
+.notes ul { padding-left: 20px; }
+.changes .links { margin-bottom: 4px; }
+.changes details { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--edge); }
+.changes summary { cursor: pointer; color: var(--text-dim); }
+
+.prose { min-width: 0; }
+.prose > :first-child { margin-top: 0; }
+.prose h2 { margin: 40px 0 12px; font-size: 26px; }
+.prose li { margin-bottom: 6px; }
+.prose ul { padding-left: 22px; }
+code { font-family: var(--font-mono); font-size: 0.875em; }
+p code, li code { padding: 1px 5px; background: var(--raised); border-radius: 4px; }
+pre {
+  margin: 12px 0 20px;
+  padding: 14px 16px;
+  overflow-x: auto;
+  background: var(--display);
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-display);
+  line-height: 1.5;
+}
+
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr)); gap: 20px; }
+.gallery figure { margin: 0; }
+.gallery img { border-radius: var(--radius-display); }
+.gallery figcaption { margin-top: 8px; color: var(--text-dim); font-size: 13px; line-height: 1.4; }
+
+@media (max-width: 900px) {
+  main, .site-header, .site-footer { padding-inline: 16px; }
+  .hero, .columns { grid-template-columns: minmax(0, 1fr); }
+  .hero { gap: 24px; padding-bottom: 32px; }
+  .changes { position: static; max-height: none; order: -1; }
+}

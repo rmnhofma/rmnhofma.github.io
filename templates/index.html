@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}PluginsBTW: audio plugins for Linux{% endblock %}
+{% block description %}Audio plugins for Linux. CLAP and VST3, free to download.{% endblock %}
+{% block meta %}<meta property="og:url" content="{{ site_url }}/">
+<meta property="og:image" content="{{ site_url }}/assets/logo.svg">{% endblock %}
+{% block main %}
+<section class="intro">
+  <h1>Audio plugins for Linux</h1>
+  <p>CLAP and VST3, free to download. Each one comes with a manual.</p>
+</section>
+<ul class="cards">
+{% for plugin in plugins %}
+  <li class="card">
+    <a href="plugins/{{ plugin.slug }}/">
+      <img src="plugins/{{ plugin.slug }}/{{ plugin.image }}" alt="{{ plugin.alt }}" width="{{ plugin.width }}" height="{{ plugin.height }}" {% if not loop.first %}loading="lazy"{% endif %}>
+      <span class="card-text">
+        <span class="card-title"><span class="card-name">{{ plugin.name }}</span><span class="version">{{ plugin.latest.version }}</span></span>
+        <span class="card-summary">{{ plugin.summary }}</span>
+      </span>
+    </a>
+  </li>
+{% endfor %}
+</ul>
+{% endblock %}

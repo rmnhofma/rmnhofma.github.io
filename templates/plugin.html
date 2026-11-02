@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{{ plugin.name }}: PluginsBTW{% endblock %}
+{% block description %}{{ plugin.description }}{% endblock %}
+{% block meta %}<meta property="og:url" content="{{ site_url }}/plugins/{{ plugin.slug }}/">
+<meta property="og:image" content="{{ site_url }}/plugins/{{ plugin.slug }}/{{ plugin.image }}">{% endblock %}
+{% block main %}
+{% set latest = plugin.latest %}
+<nav class="back"><a href="../../">All plugins</a></nav>
+<section class="hero">
+  <img class="hero-image" src="{{ plugin.image }}" alt="{{ plugin.alt }}" width="{{ plugin.width }}" height="{{ plugin.height }}">
+  <div class="hero-text">
+    <h1>{{ plugin.name }}</h1>
+    <p class="summary">{{ plugin.summary }}</p>
+    <p class="meta"><span class="version">{{ latest.version }}</span> · {{ latest.date }} · CLAP and VST3 for Linux</p>
+    <div class="actions">
+      <a class="button primary" href="{{ latest.download }}">Download {{ latest.version }}{% if latest.size %} <span class="button-note">{{ latest.size }}</span>{% endif %}</a>
+      <a class="button" href="{{ plugin.pdf }}" download>Manual <span class="button-note">PDF</span></a>
+    </div>
+    <p class="links">
+      <a href="{{ plugin.repo.html_url }}/releases">All releases</a>
+      {% if latest.checksum %}<a href="{{ latest.checksum }}">SHA-256</a>{% endif %}
+      <a href="{{ plugin.repo.html_url }}">Release repository</a>
+    </p>
+  </div>
+</section>
+<div class="columns">
+  <article class="prose">
+    {{ plugin.body }}
+    {% if plugin.gallery %}
+    <h2 id="screenshots">Screenshots</h2>
+    <div class="gallery">
+      {% for shot in plugin.gallery %}
+      <figure>
+        <a href="{{ shot.src }}"><img src="{{ shot.src }}" alt="{{ shot.alt }}" width="{{ shot.width }}" height="{{ shot.height }}" loading="lazy"></a>
+        <figcaption>{{ shot.alt }}</figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </article>
+  <aside class="panel changes">
+    <h2>What's new in {{ latest.version }}</h2>
+    <div class="notes">{{ latest.notes }}</div>
+    <p class="links"><a href="{{ latest.url }}">Release on GitHub</a></p>
+    {% if plugin.earlier %}
+    <details>
+      <summary>Earlier versions</summary>
+      {% for release in plugin.earlier %}
+      <h3><a href="{{ release.url }}">{{ release.version }}</a> <span class="date">{{ release.date }}</span></h3>
+      <div class="notes">{{ release.notes }}</div>
+      {% endfor %}
+    </details>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}
