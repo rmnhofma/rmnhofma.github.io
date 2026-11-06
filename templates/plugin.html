@@ -9,9 +9,10 @@
 <section class="hero">
   <img class="hero-image" src="{{ plugin.image }}" alt="{{ plugin.alt }}" width="{{ plugin.width }}" height="{{ plugin.height }}">
   <div class="hero-text">
-    <h1>{{ plugin.name }}</h1>
+    <h1>{{ plugin.name }}</h1>{% if plugin.discontinued %}
+    <p class="notice"><span class="badge">Discontinued</span> {{ plugin.notice }}</p>{% endif %}
     <p class="summary">{{ plugin.summary }}</p>
-    <p class="meta"><span class="version">{{ latest.version }}</span> · {{ latest.date }} · CLAP and VST3 for Linux</p>
+    <p class="meta"><span class="version">{{ latest.version }}</span> · {{ latest.date }}{% if plugin.discontinued %} · last release{% endif %} · CLAP and VST3 for Linux</p>
     <div class="actions">
       <a class="button primary" href="{{ latest.download }}">Download {{ latest.version }}{% if latest.size %} <span class="button-note">{{ latest.size }}</span>{% endif %}</a>
       <a class="button" href="{{ plugin.pdf }}" download>Manual <span class="button-note">PDF</span></a>

@@ -4,6 +4,10 @@
 Every public repository of OWNER named <Name>-release with a published release becomes a plugin:
 a card on index.html and a page in plugins/<name>/ with its README, release notes, images and a
 PDF of its manual. There is nothing to configure: run it after a release and commit the result.
+
+A plugin whose README has a Discontinued notice right under its title (discontinue-plugin.md in
+FrameworkBtw) is listed under Discontinued, below the others, and its page says so. Its repository
+is archived, so archived repositories with the notice are kept; one without it is left off.
 """
 
 import hashlib
@@ -37,6 +41,7 @@ FORMATS_LINE = re.compile(r"\s*CLAP and VST3 for Linux\.\s*$")
 IMAGE = re.compile(r"!\[([^\]]*)\]\(([^)\s]+)\)")
 LINK_ATTR = re.compile(r'(href|src)="([^"]*)"')
 TAG = re.compile(r"<[^>]+>")
+DISCONTINUED = re.compile(r"^> \*\*Discontinued\b")
 
 env = Environment(loader=FileSystemLoader(ROOT / "templates"), autoescape=select_autoescape(["html"]))
 
@@ -133,6 +138,12 @@ def parse_readme(text, name):
     if not lines[0].startswith("# "):
         sys.exit(f"{name}: the README doesn't start with '# {name}'")
     rest = "\n".join(lines[1:]).strip()
+    notice = None
+    if DISCONTINUED.match(rest):
+        quote, _, rest = rest.partition("\n\n")
+        notice, _ = render_markdown(re.sub(r"^> ?", "", quote, flags=re.M))
+        notice = re.sub(r"^<p>|</p>$", "", notice)
+        notice = re.sub(r"^<strong>Discontinued</strong>[:.]?\s*", "", notice)
     first, _, rest = rest.partition("\n\n")
     summary_html, _ = render_markdown(FORMATS_LINE.sub("", first))
     summary_html = re.sub(r"^<p>|</p>$", "", summary_html)
@@ -140,12 +151,21 @@ def parse_readme(text, name):
     if not image:
         sys.exit(f"{name}: the README has no screenshot")
     body = rest[: image.start()] + rest[image.end() :]
-    return {"summary": summary_html, "alt": image.group(1), "image": image.group(2), "body": body.strip()}
+    return {
+        "summary": summary_html,
+        "notice": notice,
+        "alt": image.group(1),
+        "image": image.group(2),
+        "body": body.strip(),
+    }
 
 
 def parse_notes(body, repo):
-    """A release's notes, without the install paragraph every release repeats and the page already has."""
-    paragraphs = [p for p in (body or "").strip().split("\n\n") if not p.startswith("Install:")]
+    """A release's notes, without what the page already has: the install paragraph every release
+    repeats and a discontinued plugin's notice."""
+    paragraphs = [
+        p for p in (body or "").strip().split("\n\n") if not (p.startswith("Install:") or DISCONTINUED.match(p))
+    ]
     notes = "\n\n".join(paragraphs).replace("github.com/PluginsBTW/", f"github.com/{OWNER}/")
     rendered, _ = render_markdown(notes)
     return rendered
@@ -188,6 +208,9 @@ def collect(repo):
         return None
     source = checkout(repo)
     readme = parse_readme((source / "README.md").read_text(), name)
+    if repo["archived"] and readme["notice"] is None:
+        print(f"  {name}: skipped, archived without a Discontinued notice in its README")
+        return None
     manual = (source / "manual.md").read_text()
     width, height = image_size(source / readme["image"])
     parsed = [parse_release(r, repo) for r in releases]
@@ -201,6 +224,8 @@ def collect(repo):
         "repo": repo,
         "source": source,
         "summary": Markup(readme["summary"]),
+        "discontinued": readme["notice"] is not None,
+        "notice": Markup(readme["notice"] or ""),
         "description": html.unescape(TAG.sub("", readme["summary"])),
         "image": readme["image"],
         "alt": readme["alt"],
@@ -283,7 +308,7 @@ def build_plugin(plugin, hashes):
 
 def main():
     repos = api(f"users/{OWNER}/repos?per_page=100&type=owner")
-    repos = [r for r in repos if r["name"].endswith("-release") and not r["private"] and not r["archived"]]
+    repos = [r for r in repos if r["name"].endswith("-release") and not r["private"]]
     print(f"{len(repos)} release repositories")
     plugins = [plugin for repo in repos if (plugin := collect(repo))]
     plugins.sort(key=lambda plugin: plugin["latest"]["published"], reverse=True)
@@ -300,10 +325,18 @@ def main():
     hashes = {plugin["name"]: hashes[plugin["name"]] for plugin in plugins}
     HASHES.write_text(json.dumps(hashes, indent=2, sort_keys=True) + "\n")
     write_checked(
-        ROOT / "index.html", env.get_template("index.html").render(plugins=plugins, root="", site_url=SITE_URL, owner=OWNER)
+        ROOT / "index.html",
+        env.get_template("index.html").render(
+            plugins=[plugin for plugin in plugins if not plugin["discontinued"]],
+            discontinued=[plugin for plugin in plugins if plugin["discontinued"]],
+            root="",
+            site_url=SITE_URL,
+            owner=OWNER,
+        ),
     )
     for plugin in plugins:
-        print(f"  {plugin['name']} {plugin['latest']['version']} ({plugin['latest']['date']})")
+        state = ", discontinued" if plugin["discontinued"] else ""
+        print(f"  {plugin['name']} {plugin['latest']['version']} ({plugin['latest']['date']}{state})")
 
 
 if __name__ == "__main__":

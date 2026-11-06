@@ -110,6 +110,28 @@ h1, h2, h3 { font-weight: 300; line-height: 1.25; }
 .card-summary { display: block; color: var(--text-dim); font-size: 15px; line-height: 1.5; }
 .card-summary strong { color: var(--text); font-weight: 300; }
 
+/* Discontinued plugins: below the others, quieter, still a click away. */
+.discontinued-intro { padding-block: 64px 24px; }
+.discontinued-intro h2 { margin: 0 0 8px; font-size: clamp(24px, 4vw, 32px); }
+.discontinued-intro p { font-size: 16px; }
+.card.discontinued { background: var(--background); }
+.card.discontinued:hover { background: var(--surface); }
+.card.discontinued img { opacity: 0.55; filter: grayscale(0.6); }
+.card.discontinued:hover img { opacity: 0.8; }
+
+.badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-control);
+  background: var(--raised);
+  color: var(--text);
+  font-size: 13px;
+  white-space: nowrap;
+}
+.notice { margin: 0 0 16px; color: var(--text-dim); font-size: 15px; line-height: 1.5; }
+.notice .badge { margin-right: 6px; }
+
 /* A plugin's page */
 .back { padding-block: 4px 20px; font-size: 14px; }
 .back a::before { content: "← "; }
